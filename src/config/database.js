@@ -1,5 +1,5 @@
-// db.js
-const Sequelize = require('sequelize');
+// database.js
+const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -7,3 +7,4 @@ const sequelize = new Sequelize({
 });
 
 module.exports = sequelize;
+

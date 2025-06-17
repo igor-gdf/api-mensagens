@@ -1,16 +1,35 @@
-# API Mensagens
+API Mensagens
 
-## Como executar a API
+API RESTful construída com Node.js, Express e Sequelize, utilizando SQLite como banco de dados.
 
-1. Clone o repositório.
-2. Instale as dependências com o comando `npm install`.
-3. Inicie a API com o comando `node index.js`.
-4. A API estará rodando na URL: `http://localhost:3000` ou na URL gerada pelo GitHub Codespaces.
+Como executar a API
 
-## Endpoints
+1. Clone o repositório:
 
-- **POST /mensagens**: Criar uma nova mensagem.
-- **GET /mensagens**: Listar todas as mensagens.
-- **GET /mensagens/:id**: Obter uma mensagem específica.
-- **PUT /mensagens/:id**: Atualizar o conteúdo de uma mensagem.
-- **DELETE /mensagens/:id**: Deletar uma mensagem.
+git clone <url-do-repositorio>
+cd api-vicente
+
+2. Instale as dependências:
+
+npm install
+
+4. Inicie a API:
+
+node src/server.js
+
+5. A API estará disponível em:
+
+http://localhost:3000
+
+Ou, se estiver rodando no GitHub Codespaces, acesse pela URL gerada automaticamente.
+
+
+Endpoints disponíveis
+
+| Método | Rota             | Descrição                      |
+| ------ | ---------------- | -------------------------------|
+| POST   | /mensagens     | Criar uma nova mensagem          |
+| GET    | /mensagens     | Listar todas as mensagens        |
+| GET    | /mensagens/:id | Buscar uma mensagem por ID       |
+| PUT    | /mensagens/:id | Atualizar o conteúdo da mensagem |
+| DELETE | /mensagens/:id | Deletar uma mensagem             |
