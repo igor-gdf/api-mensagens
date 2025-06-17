@@ -1,38 +1,32 @@
 //UsuarioController.js
+const createError = require('http-errors');
 const Usuario = require('../models/Usuario');
-const ERROR = require('../utils/errorcodes');
 
 module.exports = {
   async create(req, res, next) {
     try {
       const { nome, email, senha } = req.body;
 
-      // Validações básicas
       if (!nome || nome.trim() === '') {
-        return res.status(400).json({ error: 'Nome é obrigatório.' });
+        throw createError(400, 'Nome é obrigatório.');
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Email inválido.' });
+        throw createError(400, 'Email inválido.');
       }
 
       const senhaRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@!%*?&]).{8,}$/;
       if (!senhaRegex.test(senha)) {
-        return res.status(400).json({
-          error: 'A senha deve ter no mínimo 8 caracteres, incluindo 1 número, 1 letra maiúscula, 1 letra minúscula e 1 caractere especial (@!%*?&).'
-        });
+        throw createError(400, 'A senha deve ter no mínimo 8 caracteres, incluindo 1 número, 1 letra maiúscula, 1 letra minúscula e 1 caractere especial (@!%*?&).');
       }
 
-      // Verifica se o e-mail já está em uso
       const jaExiste = await Usuario.findOne({ where: { email } });
       if (jaExiste) {
-        return res.status(400).json({ error: 'E-mail já cadastrado.' });
+        throw createError(400, 'E-mail já cadastrado.');
       }
 
       const novoUsuario = await Usuario.create({ nome, email, senha });
-
-      // Oculta a senha no retorno
       const { senha: _, ...usuarioSemSenha } = novoUsuario.toJSON();
 
       res.status(201).json(usuarioSemSenha);
@@ -59,7 +53,7 @@ module.exports = {
       });
 
       if (!usuario) {
-        return res.status(404).json({ error: 'Usuário não encontrado.' });
+        throw createError(404, 'Usuário não encontrado.');
       }
 
       res.json(usuario);
@@ -74,7 +68,7 @@ module.exports = {
       const usuario = await Usuario.findByPk(req.params.id);
 
       if (!usuario) {
-        return res.status(404).json({ error: 'Usuário não encontrado.' });
+        throw createError(404, 'Usuário não encontrado.');
       }
 
       if (nome) usuario.nome = nome;
@@ -93,7 +87,7 @@ module.exports = {
     try {
       const usuario = await Usuario.findByPk(req.params.id);
       if (!usuario) {
-        return res.status(404).json({ error: 'Usuário não encontrado.' });
+        throw createError(404, 'Usuário não encontrado.');
       }
 
       await usuario.destroy();

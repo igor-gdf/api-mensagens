@@ -1,32 +1,29 @@
-//MensagemController
+//MensagemController.js
+const createError = require('http-errors');
 const Mensagem = require('../models/Mensagem');
 const Usuario = require('../models/Usuario');
-const ERROR = require('../utils/errorcodes');
 
 module.exports = {
-async create(req, res, next) {
-  try {
-    const { conteudo } = req.body;
+  async create(req, res, next) {
+    try {
+      const { conteudo } = req.body;
 
-    if (!conteudo || conteudo.trim() === '') {
-      const err = new Error(ERROR.EMPTY_CONTENT.message);
-      Object.assign(err, ERROR.EMPTY_CONTENT);
-      throw err;
+      if (!conteudo || conteudo.trim() === '') {
+        throw createError(400, 'O campo "conteudo" não pode estar vazio.');
+      }
+
+      const autorId = req.user.id;
+      const novaMensagem = await Mensagem.create({ conteudo, autorId });
+
+      const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
+        include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
+      });
+
+      res.status(201).json(mensagemComAutor);
+    } catch (error) {
+      next(error);
     }
-
-    const autorId = req.user.id;
-
-    const novaMensagem = await Mensagem.create({ conteudo, autorId });
-
-    const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
-      include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
-    });
-
-    res.status(201).json(mensagemComAutor);
-  } catch (error) {
-    next(error);
-  }
-},
+  },
 
   async list(req, res, next) {
     try {
@@ -46,9 +43,7 @@ async create(req, res, next) {
       });
 
       if (!mensagem) {
-        const err = new Error(ERROR.NOT_FOUND.message);
-        Object.assign(err, ERROR.NOT_FOUND);
-        throw err;
+        throw createError(404, 'Mensagem não encontrada.');
       }
 
       res.json(mensagem);
@@ -62,22 +57,17 @@ async create(req, res, next) {
       const { conteudo } = req.body;
 
       if (!conteudo || conteudo.trim() === '') {
-        const err = new Error(ERROR.EMPTY_CONTENT.message);
-        Object.assign(err, ERROR.EMPTY_CONTENT);
-        throw err;
+        throw createError(400, 'O campo "conteudo" não pode estar vazio.');
       }
 
-      // Impede alteração do autor
       if ('autorId' in req.body) {
-        return res.status(400).json({ error: 'Não é permitido alterar o autor da mensagem.' });
+        throw createError(400, 'Não é permitido alterar o autor da mensagem.');
       }
 
       const mensagem = await Mensagem.findByPk(req.params.id);
 
       if (!mensagem) {
-        const err = new Error(ERROR.NOT_FOUND.message);
-        Object.assign(err, ERROR.NOT_FOUND);
-        throw err;
+        throw createError(404, 'Mensagem não encontrada.');
       }
 
       mensagem.conteudo = conteudo;
@@ -94,9 +84,7 @@ async create(req, res, next) {
       const mensagem = await Mensagem.findByPk(req.params.id);
 
       if (!mensagem) {
-        const err = new Error(ERROR.NOT_FOUND.message);
-        Object.assign(err, ERROR.NOT_FOUND);
-        throw err;
+        throw createError(404, 'Mensagem não encontrada.');
       }
 
       await mensagem.destroy();
