@@ -4,29 +4,29 @@ const Usuario = require('../models/Usuario');
 const ERROR = require('../utils/errorcodes');
 
 module.exports = {
-  async create(req, res, next) {
-    try {
-      const { conteudo } = req.body;
+async create(req, res, next) {
+  try {
+    const { conteudo } = req.body;
 
-      if (!conteudo || conteudo.trim() === '') {
-        const err = new Error(ERROR.EMPTY_CONTENT.message);
-        Object.assign(err, ERROR.EMPTY_CONTENT);
-        throw err;
-      }
-
-      // Vínculo inicial com o autor padrão (ID 1)
-      const novaMensagem = await Mensagem.create({ conteudo, autorId: 1 });
-
-      // Retorna a mensagem incluindo dados do autor
-      const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
-        include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
-      });
-
-      res.status(201).json(mensagemComAutor);
-    } catch (error) {
-      next(error);
+    if (!conteudo || conteudo.trim() === '') {
+      const err = new Error(ERROR.EMPTY_CONTENT.message);
+      Object.assign(err, ERROR.EMPTY_CONTENT);
+      throw err;
     }
-  },
+
+    const autorId = req.user.id;
+
+    const novaMensagem = await Mensagem.create({ conteudo, autorId });
+
+    const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
+      include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
+    });
+
+    res.status(201).json(mensagemComAutor);
+  } catch (error) {
+    next(error);
+  }
+},
 
   async list(req, res, next) {
     try {
