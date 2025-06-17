@@ -1,6 +1,7 @@
 //mensagem.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Usuario = require('./Usuario');
 
 const Mensagem = sequelize.define('Mensagem', {
   id: {
@@ -11,11 +12,21 @@ const Mensagem = sequelize.define('Mensagem', {
   conteudo: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  autorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Usuarios',
+      key: 'id'
+    }
   }
 }, {
   tableName: 'mensagens',
   timestamps: false
 });
 
-module.exports = Mensagem;
+// Associação
+Mensagem.belongsTo(Usuario, { foreignKey: 'autorId', as: 'autor' });
 
+module.exports = Mensagem;

@@ -1,5 +1,6 @@
 //MensagemController
 const Mensagem = require('../models/Mensagem');
+const Usuario = require('../models/Usuario');
 const ERROR = require('../utils/errorcodes');
 
 module.exports = {
@@ -13,8 +14,15 @@ module.exports = {
         throw err;
       }
 
-      const novaMensagem = await Mensagem.create({ conteudo });
-      res.status(201).json(novaMensagem);
+      // Vínculo inicial com o autor padrão (ID 1)
+      const novaMensagem = await Mensagem.create({ conteudo, autorId: 1 });
+
+      // Retorna a mensagem incluindo dados do autor
+      const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
+        include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
+      });
+
+      res.status(201).json(mensagemComAutor);
     } catch (error) {
       next(error);
     }
@@ -22,7 +30,9 @@ module.exports = {
 
   async list(req, res, next) {
     try {
-      const mensagens = await Mensagem.findAll();
+      const mensagens = await Mensagem.findAll({
+        include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
+      });
       res.json(mensagens);
     } catch (error) {
       next(error);
@@ -31,7 +41,9 @@ module.exports = {
 
   async getById(req, res, next) {
     try {
-      const mensagem = await Mensagem.findByPk(req.params.id);
+      const mensagem = await Mensagem.findByPk(req.params.id, {
+        include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
+      });
 
       if (!mensagem) {
         const err = new Error(ERROR.NOT_FOUND.message);
@@ -53,6 +65,11 @@ module.exports = {
         const err = new Error(ERROR.EMPTY_CONTENT.message);
         Object.assign(err, ERROR.EMPTY_CONTENT);
         throw err;
+      }
+
+      // Impede alteração do autor
+      if ('autorId' in req.body) {
+        return res.status(400).json({ error: 'Não é permitido alterar o autor da mensagem.' });
       }
 
       const mensagem = await Mensagem.findByPk(req.params.id);
