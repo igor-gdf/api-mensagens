@@ -76,6 +76,10 @@ module.exports = {
         return res.status(404).json({ erro: 'Mensagem não encontrada.' });
       }
 
+      if (req.user.role !== 'ADMIN' && mensagem.autorId !== req.user.id) {
+        return res.status(403).json({ error: 'Você só pode deletar suas próprias mensagens.' });
+      }
+
       await mensagem.destroy();
       res.status(204).send();
     } catch (error) {

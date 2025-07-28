@@ -5,13 +5,13 @@ const Usuario = require('../models/Usuario');
 module.exports = {
   async create(req, res, next) {
     try {
-      const { nome, email, senha } = req.body;
+      const { nome, email, senha, } = req.body;
       const jaExiste = await Usuario.findOne({ where: { email } });
       if (jaExiste) {
         throw createError(400, 'E-mail já cadastrado.');
       }
 
-      const novoUsuario = await Usuario.create({ nome, email, senha });
+      const novoUsuario = await Usuario.create({ nome, email, senha, perfil: 'USER' });
       const { senha: _, ...usuarioSemSenha } = novoUsuario.toJSON();
 
       res.status(201).json(usuarioSemSenha);

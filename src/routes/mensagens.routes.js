@@ -6,13 +6,11 @@ const passport = require('passport');
 const { mensagemSchema } = require('../schemas/mensagemSchema');
 const validate = require('../middlewares/validate');
 
-router.use(passport.authenticate('jwt', { session: false }));
-
-router.post('/', validate(mensagemSchema), MensagemController.create);
+router.post('/', validate(mensagemSchema), passport.authenticate('jwt', { session: false }), MensagemController.create);
 router.get('/', MensagemController.list);
-router.get('/:id', MensagemController.getById);
-router.put('/:id', validate(mensagemSchema), MensagemController.update);
-router.delete('/:id', MensagemController.delete);
+router.get('/:id', passport.authenticate('jwt', { session: false }), MensagemController.getById);
+router.put('/:id', validate(mensagemSchema), passport.authenticate('jwt', { session: false }), MensagemController.update);
+router.delete('/:id', passport.authenticate('jwt', { session: false }), MensagemController.delete);
 
 module.exports = router;
 

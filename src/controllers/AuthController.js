@@ -14,7 +14,7 @@ module.exports = {
         throw createError(401, 'Credenciais inválidas.');
       }
 
-      const payload = { id: usuario.id, email: usuario.email };
+      const payload = { id: usuario.id, email: usuario.email, perfil: usuario.perfil, };
       const token = jwt.sign(payload, process.env.JWT_SECRET || 'SENHA', {
         expiresIn: '1h',
       });

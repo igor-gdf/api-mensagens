@@ -37,6 +37,9 @@ module.exports = {
       if (!comentario) {
         return res.status(404).json({ erro: 'Comentário não encontrado.' });
       }
+      if (req.user.role !== 'ADMIN' && comentario.autorId !== req.user.id) {
+        return res.status(403).json({ error: 'Você só pode deletar seus próprios comentários.' });
+      }
       await comentario.destroy();
       res.status(204).send();
     } catch (err) {

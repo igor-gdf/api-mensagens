@@ -8,6 +8,11 @@ const Usuario = sequelize.define('Usuario', {
     autoIncrement: true,
     primaryKey: true
   },
+  perfil: {
+    type: DataTypes.ENUM('USER', 'ADMIN'),
+    allowNull: false,
+    defaultValue: 'USER',
+  },
   nome: {
     type: DataTypes.STRING,
     allowNull: false
