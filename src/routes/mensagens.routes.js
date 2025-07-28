@@ -11,7 +11,7 @@ router.use(passport.authenticate('jwt', { session: false }));
 router.post('/', validate(mensagemSchema), MensagemController.create);
 router.get('/', MensagemController.list);
 router.get('/:id', MensagemController.getById);
-router.put('/:id', MensagemController.update);
+router.put('/:id', validate(mensagemSchema), MensagemController.update);
 router.delete('/:id', MensagemController.delete);
 
 module.exports = router;

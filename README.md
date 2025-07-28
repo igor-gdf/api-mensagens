@@ -33,6 +33,6 @@ Endpoints disponíveis
 | GET    | /mensagens/:id | Buscar uma mensagem por ID       |
 | PUT    | /mensagens/:id | Atualizar o conteúdo da mensagem |
 | DELETE | /mensagens/:id | Deletar uma mensagem             |
-obs: configurar segurança para ataques de força bruta denifinir ip do front como o unico que pode acessar o back E ADICONAR SCHEMAS
+obs: configurar segurança para ataques de força bruta denifinir ip do front como o unico que pode acessar o back 
 
-(só adicionei validação de dados nas rotas de create
+

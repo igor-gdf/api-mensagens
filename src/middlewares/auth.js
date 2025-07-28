@@ -8,7 +8,7 @@ dotenv.config();
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET || 'segredo_super_secreto',
+  secretOrKey: process.env.JWT_SECRET
 };
 
 passport.use(new JwtStrategy(options, async (jwt_payload, done) => {
