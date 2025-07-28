@@ -4,11 +4,11 @@ const passport = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const createError = require('http-errors');
 const cors = require('cors');
-
 const mensagensRoutes = require('./routes/mensagens.routes');
 const authRoutes = require('./routes/auth.routes');
 const usuariosRoutes = require('./routes/usuarios.routes');
 const comentariosRoutes = require('./routes/comentarios.routes');
+
 
 const app = express();
 

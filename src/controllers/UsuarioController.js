@@ -6,21 +6,6 @@ module.exports = {
   async create(req, res, next) {
     try {
       const { nome, email, senha } = req.body;
-
-      if (!nome || nome.trim() === '') {
-        throw createError(400, 'Nome é obrigatório.');
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw createError(400, 'Email inválido.');
-      }
-
-      const senhaRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@!%*?&]).{8,}$/;
-      if (!senhaRegex.test(senha)) {
-        throw createError(400, 'A senha deve ter no mínimo 8 caracteres, incluindo 1 número, 1 letra maiúscula, 1 letra minúscula e 1 caractere especial (@!%*?&).');
-      }
-
       const jaExiste = await Usuario.findOne({ where: { email } });
       if (jaExiste) {
         throw createError(400, 'E-mail já cadastrado.');
@@ -53,7 +38,7 @@ module.exports = {
       });
 
       if (!usuario) {
-        throw createError(404, 'Usuário não encontrado.');
+        return res.status(404).json({ erro: 'Usuário não encontrado.' });
       }
 
       res.json(usuario);
@@ -68,7 +53,7 @@ module.exports = {
       const usuario = await Usuario.findByPk(req.params.id);
 
       if (!usuario) {
-        throw createError(404, 'Usuário não encontrado.');
+        return res.status(404).json({ erro: 'Usuário não encontrado.' });
       }
 
       if (nome) usuario.nome = nome;
@@ -87,7 +72,7 @@ module.exports = {
     try {
       const usuario = await Usuario.findByPk(req.params.id);
       if (!usuario) {
-        throw createError(404, 'Usuário não encontrado.');
+        return res.status(404).json({ erro: 'Usuário não encontrado.' });
       }
 
       await usuario.destroy();

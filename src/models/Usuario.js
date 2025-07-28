@@ -1,32 +1,28 @@
-//Usuario.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
 
 const Usuario = sequelize.define('Usuario', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   nome: {
     type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    }
+    allowNull: false
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true,
-    }
+    unique: true
   },
   senha: {
     type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      is: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@!%*?&]).{8,}$/i
-    }
+    allowNull: false
   }
+}, {
+  tableName: 'usuarios'
 });
 
 Usuario.beforeCreate(async (user) => {

@@ -6,15 +6,9 @@ const Usuario = require('../models/Usuario');
 module.exports = {
   async create(req, res, next) {
     try {
-      const { conteudo } = req.body;
-
-      if (!conteudo || conteudo.trim() === '') {
-        throw createError(400, 'O campo "conteudo" não pode estar vazio.');
-      }
-
       const autorId = req.user.id;
+      const { conteudo } = req.body;
       const novaMensagem = await Mensagem.create({ conteudo, autorId });
-
       const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
         include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
       });
@@ -43,7 +37,7 @@ module.exports = {
       });
 
       if (!mensagem) {
-        throw createError(404, 'Mensagem não encontrada.');
+        return res.status(404).json({ erro: 'Mensagem não encontrada.' });
       }
 
       res.json(mensagem);
@@ -56,18 +50,13 @@ module.exports = {
     try {
       const { conteudo } = req.body;
 
-      if (!conteudo || conteudo.trim() === '') {
-        throw createError(400, 'O campo "conteudo" não pode estar vazio.');
-      }
-
       if ('autorId' in req.body) {
         throw createError(400, 'Não é permitido alterar o autor da mensagem.');
       }
 
       const mensagem = await Mensagem.findByPk(req.params.id);
-
       if (!mensagem) {
-        throw createError(404, 'Mensagem não encontrada.');
+        return res.status(404).json({ erro: 'Mensagem não encontrada.' });
       }
 
       mensagem.conteudo = conteudo;
@@ -84,7 +73,7 @@ module.exports = {
       const mensagem = await Mensagem.findByPk(req.params.id);
 
       if (!mensagem) {
-        throw createError(404, 'Mensagem não encontrada.');
+        return res.status(404).json({ erro: 'Mensagem não encontrada.' });
       }
 
       await mensagem.destroy();

@@ -1,19 +1,13 @@
 // controllers/ComentarioController.js
-const createError = require('http-errors');
 const Comentario = require('../models/Comentario');
 const Usuario = require('../models/Usuario');
 
 module.exports = {
   async create(req, res, next) {
     try {
-      const { conteudo, mensagemId } = req.body;
-      if (!conteudo || conteudo.trim() === '') {
-        throw createError(400, 'Conteúdo não pode estar vazio.');
-      }
-
       const autorId = req.user.id;
+      const { conteudo, mensagemId } = req.body;
       const comentario = await Comentario.create({ conteudo, autorId, mensagemId });
-
       const comentarioComAutor = await Comentario.findByPk(comentario.id, {
         include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
       });
@@ -41,7 +35,7 @@ module.exports = {
     try {
       const comentario = await Comentario.findByPk(req.params.id);
       if (!comentario) {
-        throw createError(404, 'Comentário não encontrado.');
+        return res.status(404).json({ erro: 'Comentário não encontrado.' });
       }
       await comentario.destroy();
       res.status(204).send();

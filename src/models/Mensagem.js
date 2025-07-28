@@ -1,4 +1,3 @@
-//mensagem.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Usuario = require('./Usuario');
@@ -17,7 +16,7 @@ const Mensagem = sequelize.define('Mensagem', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Usuarios',
+      model: 'usuarios',
       key: 'id'
     }
   }
@@ -26,7 +25,6 @@ const Mensagem = sequelize.define('Mensagem', {
   timestamps: false
 });
 
-// Associação
 Mensagem.belongsTo(Usuario, { foreignKey: 'autorId', as: 'autor' });
 
 module.exports = Mensagem;
