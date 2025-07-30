@@ -5,8 +5,8 @@ const AuthController = require('../controllers/AuthController');
 const validate = require('../middlewares/validate');
 const { authSchema } = require('../schemas/authSchema');
 
-router.post('/auth', validate(authSchema), AuthController.login);
-router.post('/auth/refresh', AuthController.refreshToken);
+router.post('/', validate(authSchema), AuthController.login);
+router.post('/refresh', AuthController.refreshToken);
 
 
 module.exports = router;
