@@ -9,4 +9,10 @@ const mensagemSchema = Joi.object({
   })
 });
 
-module.exports = mensagemSchema;
+const mensagemParcialSchema = Joi.object({
+  titulo: Joi.string().optional(),
+  conteudo: Joi.string().optional(),
+}).min(1); 
+
+
+module.exports = mensagemSchema, mensagemParcialSchema;
