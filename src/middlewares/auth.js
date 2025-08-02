@@ -1,7 +1,7 @@
 //auth.js
 const passport = require('passport');
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-const Usuario = require('../models/Usuario');
+const { Usuario } = require('../models/index');
 const dotenv = require('dotenv');
 
 dotenv.config();

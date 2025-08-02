@@ -1,6 +1,6 @@
 //UsuarioController.js
 const createError = require('http-errors');
-const Usuario = require('../models/Usuario');
+const { Usuario } = require('../models/index');
 
 module.exports = {
   async create(req, res, next) {

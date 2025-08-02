@@ -1,13 +1,20 @@
 // controllers/ComentarioController.js
-const Comentario = require('../models/Comentario');
-const Usuario = require('../models/Usuario');
+const { Usuario } = require('../models/index');
 
 module.exports = {
   async create(req, res, next) {
     try {
       const autorId = req.user.id;
-      const { conteudo, mensagemId } = req.body;
-      const comentario = await Comentario.create({ conteudo, autorId, mensagemId });
+      const { texto, mensagem_id } = req.body;
+
+      // Você pode querer validar se a mensagem existe antes de criar comentário
+
+      const comentario = await Comentario.create({
+        texto,
+        usuario_id: autorId,
+        mensagem_id
+      });
+
       const comentarioComAutor = await Comentario.findByPk(comentario.id, {
         include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
       });
@@ -22,7 +29,7 @@ module.exports = {
     try {
       const { mensagemId } = req.params;
       const comentarios = await Comentario.findAll({
-        where: { mensagemId },
+        where: { mensagem_id: mensagemId },
         include: [{ model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }]
       });
       res.json(comentarios);
@@ -37,7 +44,7 @@ module.exports = {
       if (!comentario) {
         return res.status(404).json({ erro: 'Comentário não encontrado.' });
       }
-      if (req.user.role !== 'ADMIN' && comentario.autorId !== req.user.id) {
+      if (req.user.role !== 'ADMIN' && comentario.usuario_id !== req.user.id) {
         return res.status(403).json({ error: 'Você só pode deletar seus próprios comentários.' });
       }
       await comentario.destroy();

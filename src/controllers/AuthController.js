@@ -1,6 +1,6 @@
 //AuthController.js
 const createError = require('http-errors');
-const Usuario = require('../models/Usuario');
+const { Usuario } = require('../models/index');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
