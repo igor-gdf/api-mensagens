@@ -5,12 +5,11 @@ module.exports = {
   async create(req, res, next) {
     try {
       const autorId = req.user.id;
-      const { texto, mensagem_id } = req.body;
-
-      // Você pode querer validar se a mensagem existe antes de criar comentário
+      const { conteudo, mensagem_id } = req.body;
 
       const comentario = await Comentario.create({
-        texto,
+        id,
+        conteudo,
         usuario_id: autorId,
         mensagem_id
       });
