@@ -1,6 +1,4 @@
 //MensagemController.js
-// MensagemController.js
-const createError = require('http-errors');
 const { Mensagem } = require('../models');
 
 module.exports = {

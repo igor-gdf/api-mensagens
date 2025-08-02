@@ -1,3 +1,4 @@
+//ComentarioController.js
 const { Comentario, Usuario } = require('../models');
 
 module.exports = {
