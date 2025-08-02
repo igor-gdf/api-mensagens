@@ -41,6 +41,11 @@ module.exports = {
         return res.status(404).json({ erro: 'Usuário não encontrado.' });
       }
 
+      // Restrição: somente o próprio usuário ou ADMIN
+      if (req.user.role !== 'ADMIN' && req.user.id != req.params.id) {
+        return res.status(403).json({ erro: 'Acesso negado.' });
+      }
+
       res.json(usuario);
     } catch (error) {
       next(error);
@@ -49,13 +54,18 @@ module.exports = {
 
   async update(req, res, next) {
     try {
-      const { nome, email } = req.body;
       const usuario = await Usuario.findByPk(req.params.id);
 
       if (!usuario) {
         return res.status(404).json({ erro: 'Usuário não encontrado.' });
       }
 
+      // Restrição: somente o próprio usuário ou ADMIN
+      if (req.user.role !== 'ADMIN' && req.user.id != req.params.id) {
+        return res.status(403).json({ erro: 'Acesso negado.' });
+      }
+
+      const { nome, email } = req.body;
       if (nome) usuario.nome = nome;
       if (email) usuario.email = email;
 

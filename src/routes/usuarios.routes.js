@@ -12,6 +12,6 @@ router.post('/', validate(usuarioSchema), UsuarioController.create);
 router.get('/', passport.authenticate('jwt', { session: false }), authorizeRoles('ADMIN'), UsuarioController.list);
 router.get('/:id', passport.authenticate('jwt', { session: false }), UsuarioController.getById);
 router.patch ('/:id', validate(usuarioSchema), passport.authenticate('jwt', { session: false }), UsuarioController.update);
-router.delete('/:id', passport.authenticate('jwt', { session: false }), UsuarioController.delete);
+router.delete('/:id', passport.authenticate('jwt', { session: false }), authorizeRoles('ADMIN'), UsuarioController.delete);
 
 module.exports = router;
