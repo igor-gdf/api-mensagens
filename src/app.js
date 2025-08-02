@@ -19,7 +19,6 @@ app.use(cors());
 app.use('/auth', authRoutes);
 app.use('/mensagens', mensagensRoutes);
 app.use('/usuarios', usuariosRoutes);
-app.use('/comentarios', comentariosRoutes);
 
 app.use((req, res, next) => {
   next(createError(404, 'Rota não encontrada.'));
