@@ -5,7 +5,7 @@ const AuthController = require('../controllers/AuthController');
 const validate = require('../middlewares/validate');
 const { authSchema } = require('../schemas/authSchema');
 
-router.post('/', validate(authSchema), AuthController.login);
+router.post('/login', validate(authSchema), AuthController.login);
 router.post('/refresh', AuthController.refreshToken);
 
 
