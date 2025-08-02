@@ -1,6 +1,7 @@
 //MensagemController.js
+// MensagemController.js
 const createError = require('http-errors');
-const { Usuario } = require('../models/index');
+const { Mensagem } = require('../models');
 
 module.exports = {
   async create(req, res, next) {
@@ -8,11 +9,10 @@ module.exports = {
       const autorId = req.user.id;
       const { titulo, conteudo } = req.body;
       const novaMensagem = await Mensagem.create({ titulo, conteudo, usuario_id: autorId });
+
+      // Trazer mensagem com dados do autor e comentários (se quiser, pode usar middleware)
       const mensagemComAutor = await Mensagem.findByPk(novaMensagem.id, {
-        include: [
-          { model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] },
-          { model: Comentario, as: 'comentarios' } // opcional, se quiser já trazer comentários junto
-        ]
+        include: ['autor', 'comentarios']
       });
 
       res.status(201).json(mensagemComAutor);
@@ -24,10 +24,7 @@ module.exports = {
   async list(req, res, next) {
     try {
       const mensagens = await Mensagem.findAll({
-        include: [
-          { model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] },
-          { model: Comentario, as: 'comentarios' }
-        ]
+        include: ['autor', 'comentarios']
       });
       res.json(mensagens);
     } catch (error) {
@@ -37,18 +34,8 @@ module.exports = {
 
   async getById(req, res, next) {
     try {
-      const mensagem = await Mensagem.findByPk(req.params.id, {
-        include: [
-          { model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] },
-          { model: Comentario, as: 'comentarios' }
-        ]
-      });
-
-      if (!mensagem) {
-        return res.status(404).json({ erro: 'Mensagem não encontrada.' });
-      }
-
-      res.json(mensagem);
+      // mensagem já está em req.mensagem carregada pelo middleware
+      res.json(req.mensagem);
     } catch (error) {
       next(error);
     }
@@ -56,23 +43,15 @@ module.exports = {
 
   async update(req, res, next) {
     try {
+      // mensagem já está em req.mensagem carregada pelo middleware
       const { titulo, conteudo } = req.body;
 
-      if ('usuario_id' in req.body) {
-        throw createError(400, 'Não é permitido alterar o autor da mensagem.');
-      }
+      if (titulo) req.mensagem.titulo = titulo;
+      if (conteudo) req.mensagem.conteudo = conteudo;
 
-      const mensagem = await Mensagem.findByPk(req.params.id);
-      if (!mensagem) {
-        return res.status(404).json({ erro: 'Mensagem não encontrada.' });
-      }
+      await req.mensagem.save();
 
-      if (titulo) mensagem.titulo = titulo;
-      if (conteudo) mensagem.conteudo = conteudo;
-
-      await mensagem.save();
-
-      res.json(mensagem);
+      res.json(req.mensagem);
     } catch (error) {
       next(error);
     }
@@ -80,17 +59,7 @@ module.exports = {
 
   async delete(req, res, next) {
     try {
-      const mensagem = await Mensagem.findByPk(req.params.id);
-
-      if (!mensagem) {
-        return res.status(404).json({ erro: 'Mensagem não encontrada.' });
-      }
-
-      if (req.user.role !== 'ADMIN' && mensagem.usuario_id !== req.user.id) {
-        return res.status(403).json({ error: 'Você só pode deletar suas próprias mensagens.' });
-      }
-
-      await mensagem.destroy();
+      await req.mensagem.destroy();
       res.status(204).send();
     } catch (error) {
       next(error);
