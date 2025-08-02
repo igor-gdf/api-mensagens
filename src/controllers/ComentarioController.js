@@ -1,13 +1,13 @@
 const { Comentario, Usuario } = require('../models');
 
 module.exports = {
-  async create(req, res, next) {
+  async create({ user, params, body }, res, next) {
     try {
-      const usuario_id = req.user.id;
-      const mensagem_id = req.params.id;
-      const { conteudo } = req.body;
-
-      const comentario = await Comentario.create({ conteudo, usuario_id, mensagem_id });
+      const comentario = await Comentario.create({
+        conteudo: body.conteudo,
+        usuario_id: user.id,
+        mensagem_id: params.id,
+      });
 
       const comentarioComAutor = await Comentario.findByPk(comentario.id, {
         include: { model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }
@@ -19,11 +19,10 @@ module.exports = {
     }
   },
 
-  async listByMensagem(req, res, next) {
+  async listByMensagem({ params }, res, next) {
     try {
-      const mensagem_id = req.params.id;
       const comentarios = await Comentario.findAll({
-        where: { mensagem_id },
+        where: { mensagem_id: params.id },
         include: { model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }
       });
       res.json(comentarios);
@@ -32,18 +31,17 @@ module.exports = {
     }
   },
 
-  async update(req, res, next) {
+  async update({ params, body }, res, next) {
     try {
-      const { id_comentario, id } = req.params; // id = mensagem
-      const comentario = await Comentario.findOne({ where: { id: id_comentario, mensagem_id: id } });
+      const comentario = await Comentario.findOne({
+        where: { id: params.id_comentario, mensagem_id: params.id }
+      });
 
-      if (!comentario) return res.status(404).json({ erro: 'Comentário não encontrado' });
-
-      if (req.user.role !== 'ADMIN' && comentario.usuario_id !== req.user.id) {
-        return res.status(403).json({ erro: 'Apenas o autor ou admin pode editar.' });
+      if (!comentario) {
+        return res.status(404).json({ erro: 'Comentário não encontrado' });
       }
 
-      comentario.conteudo = req.body.conteudo || comentario.conteudo;
+      comentario.conteudo = body.conteudo || comentario.conteudo;
       await comentario.save();
 
       res.json(comentario);
@@ -52,15 +50,14 @@ module.exports = {
     }
   },
 
-  async delete(req, res, next) {
+  async delete({ params }, res, next) {
     try {
-      const { id_comentario, id } = req.params;
-      const comentario = await Comentario.findOne({ where: { id: id_comentario, mensagem_id: id } });
+      const comentario = await Comentario.findOne({
+        where: { id: params.id_comentario, mensagem_id: params.id }
+      });
 
-      if (!comentario) return res.status(404).json({ erro: 'Comentário não encontrado' });
-
-      if (req.user.role !== 'ADMIN' && comentario.usuario_id !== req.user.id) {
-        return res.status(403).json({ erro: 'Você só pode deletar seus próprios comentários.' });
+      if (!comentario) {
+        return res.status(404).json({ erro: 'Comentário não encontrado' });
       }
 
       await comentario.destroy();
