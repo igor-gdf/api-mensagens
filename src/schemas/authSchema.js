@@ -1,4 +1,4 @@
-// src/schemas/auth.schema.js
+// src/schemas/authSchema.js
 const Joi = require('joi');
 
 const authSchema = Joi.object({
