@@ -1,4 +1,4 @@
-// src/schemas/authSchema.js
+// schemas/authSchema.js
 const Joi = require('joi');
 
 const authSchema = Joi.object({
@@ -11,4 +11,4 @@ const authSchema = Joi.object({
   })
 });
 
-module.exports = { authSchema };
+module.exports = authSchema;
