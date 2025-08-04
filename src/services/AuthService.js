@@ -10,7 +10,7 @@ async function login(email, senha) {
   const usuario = await Usuario.findOne({ where: { email } }); // Exemplo com Sequelize
   if (!usuario) throw createError(401, 'Usuário não encontrado.');
 
-  const senhaValida = await bcrypt.compare(senha, usuario.senhaHash); // ajuste campo senha conforme seu modelo
+  const senhaValida = await bcrypt.compare(senha, usuario.senha);
   if (!senhaValida) throw createError(401, 'Senha incorreta.');
 
   return gerarTokens(usuario);
