@@ -5,8 +5,8 @@ module.exports = {
   async login(req, res, next) {
     try {
       const { email, senha } = req.body;
-      const tokens = await AuthService.login(email, senha);
-      res.json(tokens);
+      const access_token = await AuthService.login(email, senha);
+      res.json(access_token);
     } catch (err) {
       next(err);
     }

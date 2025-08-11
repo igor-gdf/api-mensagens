@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 
 function gerarTokens(usuario) {
   const payload = { id: usuario.id, email: usuario.email, perfil: usuario.perfil };
-  const token = jwt.sign(payload, process.env.JWT_SECRET || 'SENHA', { expiresIn: '1h' });
+  const access_token = jwt.sign(payload, process.env.JWT_SECRET || 'SENHA', { expiresIn: '1h' });
   const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: '7d' });
-  return { token, refreshToken };
+  return { access_token, refreshToken };
 }
 
 function verificarRefreshToken(token) {

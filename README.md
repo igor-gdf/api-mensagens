@@ -36,3 +36,8 @@ Endpoints disponíveis
 obs: configurar segurança para ataques de força bruta denifinir ip do front como o unico que pode acessar o back 
 Desacoplar a validação dos controllers
 
+npm i
+.env
+jwt_secret=senha
+REFRESH_SECRET=Senha2
+npm run dev
