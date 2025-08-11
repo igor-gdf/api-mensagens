@@ -1,4 +1,3 @@
-// models/Comentario.js
 module.exports = (sequelize, DataTypes) => {
   const Comentario = sequelize.define('Comentario', {
     id: {
@@ -17,11 +16,31 @@ module.exports = (sequelize, DataTypes) => {
     mensagem_id: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    data_criacao: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    },
+    editado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     tableName: 'comentarios',
-    timestamps: false
+    timestamps: false,
+    hooks: {
+      beforeUpdate: (comentario, options) => {
+        if (comentario.changed('editado') && comentario.editado === false) {
+          comentario.editado = true;
+        } else {
+          comentario.editado = true;
+        }
+      }
+    }
   });
 
   return Comentario;
 };
+

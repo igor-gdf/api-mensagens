@@ -12,7 +12,7 @@ const comentariosRoutes = require('./comentarios.routes');
 router.post('/', validate(mensagemSchema), passport.authenticate('jwt', { session: false }), MensagemController.create);
 router.get('/', MensagemController.list);
 router.get('/:id', loadMensagem, MensagemController.getById);
-router.put('/:id', passport.authenticate('jwt', { session: false }), loadMensagem, checkOwnerOrAdminMensagem, prohibitAutorChangeMensagem, MensagemController.update);
+router.put('/:id', passport.authenticate('jwt', { session: false }), loadMensagem, prohibitAutorChangeMensagem, MensagemController.update);
 router.patch('/:id', passport.authenticate('jwt', { session: false }), loadMensagem, checkOwnerOrAdminMensagem, prohibitAutorChangeMensagem, MensagemController.update);
 router.delete('/:id', passport.authenticate('jwt', { session: false }), loadMensagem, checkOwnerOrAdminMensagem, MensagemController.delete);
 

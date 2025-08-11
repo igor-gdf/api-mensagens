@@ -1,6 +1,5 @@
 //ComentarioController.js
 const { Comentario, Usuario } = require('../models');
-
 module.exports = {
   async create({ user, params, body }, res, next) {
     try {
@@ -10,15 +9,18 @@ module.exports = {
         mensagem_id: params.id,
       });
 
+
       const comentarioComAutor = await Comentario.findByPk(comentario.id, {
         include: { model: Usuario, as: 'autor', attributes: ['id', 'nome', 'email'] }
       });
+
 
       res.status(201).json(comentarioComAutor);
     } catch (err) {
       next(err);
     }
   },
+
 
   async listByMensagem({ params }, res, next) {
     try {
@@ -32,24 +34,35 @@ module.exports = {
     }
   },
 
+
   async update({ params, body }, res, next) {
     try {
       const comentario = await Comentario.findOne({
         where: { id: params.id_comentario, mensagem_id: params.id }
       });
-
+ 
       if (!comentario) {
         return res.status(404).json({ erro: 'Comentário não encontrado' });
       }
-
+ 
+      // Remove 'editado' para impedir alteração direta
+      if ('editado' in body) {
+        delete body.editado;
+      }
+ 
       comentario.conteudo = body.conteudo || comentario.conteudo;
+ 
+      // Marca comentário como editado
+      comentario.editado = true;
+ 
       await comentario.save();
-
+ 
       res.json(comentario);
     } catch (err) {
       next(err);
     }
   },
+
 
   async delete({ params }, res, next) {
     try {
@@ -57,9 +70,11 @@ module.exports = {
         where: { id: params.id_comentario, mensagem_id: params.id }
       });
 
+
       if (!comentario) {
         return res.status(404).json({ erro: 'Comentário não encontrado' });
       }
+
 
       await comentario.destroy();
       res.status(204).send();
@@ -68,3 +83,6 @@ module.exports = {
     }
   }
 };
+
+
+
