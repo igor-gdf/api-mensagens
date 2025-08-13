@@ -1,15 +1,17 @@
 //checkOwnerOrAdminComentario
-const { Comentario } = require('../models');
+const createError = require('http-errors');
 
 async function checkOwnerOrAdminComentario(req, res, next) {
   try {
-    const comentario = await Comentario.findOne({ where: { id: req.params.id_comentario, mensagem_id: req.params.id } });
-    if (!comentario) return res.status(404).json({ erro: 'Comentário não encontrado.' });
+    const comentario = req.comentario; // comentário já carregado pelo middleware loadComentario
+    if (!comentario) {
+      return next(createError(404, 'Comentário não encontrado.'));
+    }
 
     if (req.user.perfil !== 'ADMIN' && comentario.usuario_id !== req.user.id) {
-      return res.status(403).json({ erro: 'Acesso negado.' });
+      return next(createError(403, 'Acesso negado. Apenas o criador do comentário pode atualizá-lo.'));
     }
-    req.comentario = comentario; // opcional, pode usar depois no controller
+
     next();
   } catch (err) {
     next(err);
