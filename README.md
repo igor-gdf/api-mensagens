@@ -1,43 +1,47 @@
-API Mensagens
+# API Mensagens
 
-API RESTful construída com Node.js, Express e Sequelize, utilizando SQLite como banco de dados.
+Este projeto é uma API RESTful para envio, recebimento e gerenciamento de mensagens, hospedada em:  
+https://api-mensagens-fq1p.onrender.com/
 
-Como executar a API
+## Funcionalidades
 
-1. Clone o repositório:
+- Cadastro e autenticação de usuários
+- Envio de mensagens entre usuários
+- Listagem de mensagens recebidas e enviadas
+- Marcação de mensagens como lidas
+- Exclusão de mensagens
 
-git clone <url-do-repositorio>
-cd api-vicente
+## Tecnologias Utilizadas
 
-2. Instale as dependências:
+- Node.js
+- Express
+- MongoDB (ou outro banco de dados, conforme implementação)
+- JWT para autenticação
 
-npm install
+## Como utilizar
 
-4. Inicie a API:
+1. **Clone o repositório:**
+   ```sh
+   git clone <url-do-repositorio>
+   ```
 
-node src/server.js
+2. **Instale as dependências:**
+   ```sh
+   npm install
+   ```
 
-5. A API estará disponível em:
+3. **Configure as variáveis de ambiente:**  
+   Crie um arquivo `.env` com as configurações necessárias (exemplo: conexão com banco de dados, segredo JWT).
 
-http://localhost:3000
+4. **Inicie a aplicação:**
+   ```sh
+   npm start
+   ```
 
-Ou, se estiver rodando no GitHub Codespaces, acesse pela URL gerada automaticamente.
+## Documentação da API
 
+A documentação detalhada das rotas, parâmetros e exemplos de resposta está disponível no arquivo `docs/API.md` (ou consulte a documentação online).
 
-Endpoints disponíveis
+## Licença
 
-| Método | Rota             | Descrição                      |
-| ------ | ---------------- | -------------------------------|
-| POST   | /mensagens     | Criar uma nova mensagem          |
-| GET    | /mensagens     | Listar todas as mensagens        |
-| GET    | /mensagens/:id | Buscar uma mensagem por ID       |
-| PUT    | /mensagens/:id | Atualizar o conteúdo da mensagem |
-| DELETE | /mensagens/:id | Deletar uma mensagem             |
-obs: configurar segurança para ataques de força bruta denifinir ip do front como o unico que pode acessar o back 
-Desacoplar a validação dos controllers
-
-npm i
-.env
-jwt_secret=senha
-REFRESH_SECRET=Senha2
-npm run dev
+Este projeto está licenciado sob a GPL v3. Consulte o arquivo [LICENSE](./LICENSE) para mais informações.
